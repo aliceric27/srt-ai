@@ -5,7 +5,7 @@ import { libre, roaldDahl } from "@/fonts";
 
 import Form from "@/components/Form";
 import Timestamp from "@/components/Timestamp";
-
+import { langfilename } from '@/lib/language';
 import type { Chunk } from "@/types";
 import { parseSegment, parseTimestamp } from "@/lib/client";
 
@@ -36,6 +36,8 @@ export default function Home() {
   const [status, setStatus] = React.useState<"idle" | "busy" | "done">("idle");
   const [translatedSrt, setTranslatedSrt] = React.useState("");
   const [translatedChunks, setTranslatedChunks] = React.useState<Chunk[]>([]);
+
+
 
   async function handleStream(response: any) {
     const data = response.body;
@@ -76,7 +78,7 @@ export default function Home() {
       if (response.ok) {
         console.log('response', response)
         const content = await handleStream(response);
-        const filename = `${originfilenamne}-${language}.srt`;
+        const filename = `${originfilenamne}-${langfilename(language)}.srt`;
         if (content) {
           setStatus("done");
           triggerFileDownload(filename, content);

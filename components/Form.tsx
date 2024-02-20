@@ -2,7 +2,7 @@
 
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
-
+import { setlang } from '@/lib/language';
 interface Props {
   onSubmit: (content: string, language: string, filename: string) => void;
 }
@@ -10,9 +10,7 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const LANGUAGES = [
-  '繁體中文', '日文', 'English', '簡體中文'
-].sort()
+const LANGUAGES = setlang;
 
 const readFileContents = async (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
