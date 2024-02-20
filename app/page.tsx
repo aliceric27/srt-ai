@@ -66,7 +66,7 @@ export default function Home() {
     }
   }
 
-  async function handleSubmit(content: string, language: string, originfilenamne: string) {
+  async function handleSubmit(content: string, language: string, originfilename: string, suffix: boolean) {
     try {
       setStatus("busy");
       const response = await fetch("/api", {
@@ -78,10 +78,13 @@ export default function Home() {
       if (response.ok) {
         console.log('response', response)
         const content = await handleStream(response);
-        const filename = `${originfilenamne}-${langfilename(language)}.srt`;
+        const filename = () => {
+          if (suffix) return `${originfilename}.srt`;
+          else return `${originfilename}-${langfilename(language)}.srt`;
+        }
         if (content) {
           setStatus("done");
-          triggerFileDownload(filename, content);
+          triggerFileDownload(filename(), content);
         } else {
           alert("Error occurred while reading the file");
         }

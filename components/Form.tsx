@@ -4,7 +4,7 @@ import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 import { setlang } from '@/lib/language';
 interface Props {
-  onSubmit: (content: string, language: string, filename: string) => void;
+  onSubmit: (content: string, language: string, filename: string, suffix: boolean) => void;
 }
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
@@ -33,17 +33,20 @@ const SrtForm: React.FC<Props> = ({ onSubmit }) => {
   const [file, setFile] = useState<File>();
   const [language, setLanguage] = useState<string>("");
   const [dragging, setDragging] = useState<boolean>(false);
-  const [originfilenamne, setFilfenam] = useState<string>("");
+  const [originfilename, setFilename] = useState<string>("");
+  const [DontChangeFilename, setDontChangeFilename] = useState<boolean>(true);
+  const handleDontChangeFilename = () => {
+    setDontChangeFilename(!DontChangeFilename);
+  };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (file) {
       const origin = file.name.split(".")[0];
-      setFilfenam(origin)
+      setFilename(origin)
     }
-    if (file && language && originfilenamne) {
-      // setFilfenam(origin)
+    if (file && language && originfilename) {
       const content = await readFileContents(file);
-      onSubmit(content, language, originfilenamne);
+      onSubmit(content, language, originfilename, DontChangeFilename);
     }
   };
 
@@ -54,8 +57,8 @@ const SrtForm: React.FC<Props> = ({ onSubmit }) => {
       const droppedFile = e.dataTransfer.files[0];
       // Make sure the file extension is ".srt"
       const fileName = droppedFile.name;
-      setFilfenam(fileName)
-      console.log('filename', originfilenamne)
+      setFilename(fileName)
+      console.log('filename', originfilename)
       const fileExtension = fileName.split(".").pop();
       if (fileExtension !== "srt") {
         alert("Please upload a .srt file");
@@ -157,8 +160,18 @@ const SrtForm: React.FC<Props> = ({ onSubmit }) => {
                   </option>
                 ))}
               </select>
+
             </div>
-            <div className="h-2"></div>
+            <div className="h-2">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={DontChangeFilename}
+                  onChange={handleDontChangeFilename}
+                />
+                ❌Don't Change File Name(will keep language suffix)
+              </label>
+            </div>
           </div>
           <button
             disabled={!file || !language}

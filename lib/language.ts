@@ -6,7 +6,7 @@ const LANGUAGE = [
 ]
 export const setlang = LANGUAGE.map((item) => item.name).sort();
 
-export function langfilename(text: string) {
+export function langfilename(text: string | null) {
     if (text) {
         const name = LANGUAGE.find((item) => item.name === text)
         return name?.file
